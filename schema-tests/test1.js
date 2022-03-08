@@ -13,7 +13,9 @@ const schema = {
   properties: {
     name: {
       type: 'string',
-      format: 'email',
+      validateName: 'false',
+      //   validateName: true,
+      //   format: 'email', // email的校验
       //   minLength: 10,
     },
     age: {
@@ -24,7 +26,7 @@ const schema = {
       items: [
         {
           type: 'string',
-          format: 'test',
+          format: 'test', // 自定义format
         },
         {
           type: 'number',
@@ -41,8 +43,16 @@ const schema = {
 const ajv = new Ajv();
 // 扩展一个自定义的format
 ajv.addFormat('test', (data) => {
-  console.log(data, '------------');
+  console.log(data, '------------'); // haha ------------
   return data === 'haha';
+});
+// 扩展一个自定义关键字
+ajv.addKeyword('validateName', {
+  validate(schema, data) {
+    // console.log(schema, data); // true Jokcy11111@qq.com
+    if (schema === true) return true;
+    else return schema.length === 5;
+  },
 });
 const validate = ajv.compile(schema);
 const valid = validate({
