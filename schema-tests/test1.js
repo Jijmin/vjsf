@@ -14,10 +14,14 @@ const schema = {
   properties: {
     name: {
       type: 'string',
-      validateName: 'false',
+      //   validateName: 'false',
+      errorMessage: {
+        type: '必须是字符串',
+        minLength: '长度不能小于30',
+      }, // 只支持原生的
       //   validateName: true,
       //   format: 'email', // email的校验
-      //   minLength: 10,
+      minLength: 30,
     },
     age: {
       type: 'number',
@@ -41,7 +45,8 @@ const schema = {
   required: ['name', 'age'],
 };
 
-const ajv = new Ajv();
+const ajv = new Ajv({ allErrors: true, jsonPointers: true });
+require('ajv-errors')(ajv);
 // 扩展一个自定义的format
 ajv.addFormat('test', (data) => {
   console.log(data, '------------'); // haha ------------
@@ -50,11 +55,11 @@ ajv.addFormat('test', (data) => {
 // 扩展一个自定义关键字
 ajv.addKeyword('validateName', {
   // 会将minLength: 10,自动合并到schema中的validateName的那个字段中
-  //   macro() {
-  //     return {
-  //       minLength: 30,
-  //     };
-  //   },
+  macro() {
+    return {
+      minLength: 30,
+    };
+  },
   //   compile(sch, parentSchema) {
   //     console.log(sch, parentSchema); // false { type: 'string', validateName: 'false' }
   //     // return true; // error，需要返回一个函数 Cannot create property 'errors' on boolean 'true'
@@ -69,19 +74,19 @@ ajv.addKeyword('validateName', {
   //     if (schema === true) return true;
   //     else return schema.length === 5;
   //   },
-  validate: function fun(schema, data) {
-    // 自定义错误信息
-    fun.errors = [
-      {
-        keyword: 'validateName',
-        dataPath: '.name',
-        schemaPath: '#/properties/name/validateName',
-        params: { keyword: 'validateName' },
-        message: '自定义错误信息',
-      },
-    ];
-    return false;
-  },
+  //   validate: function fun(schema, data) {
+  //     // 自定义错误信息
+  //     fun.errors = [
+  //       {
+  //         keyword: 'validateName',
+  //         dataPath: '.name',
+  //         schemaPath: '#/properties/name/validateName',
+  //         params: { keyword: 'validateName' },
+  //         message: '自定义错误信息',
+  //       },
+  //     ];
+  //     return false;
+  //   },
 });
 const validate = ajv.compile(schema);
 const valid = validate({
