@@ -50,11 +50,11 @@ ajv.addFormat('test', (data) => {
 // 扩展一个自定义关键字
 ajv.addKeyword('validateName', {
   // 会将minLength: 10,自动合并到schema中的validateName的那个字段中
-  macro() {
-    return {
-      minLength: 30,
-    };
-  },
+  //   macro() {
+  //     return {
+  //       minLength: 30,
+  //     };
+  //   },
   //   compile(sch, parentSchema) {
   //     console.log(sch, parentSchema); // false { type: 'string', validateName: 'false' }
   //     // return true; // error，需要返回一个函数 Cannot create property 'errors' on boolean 'true'
@@ -69,6 +69,19 @@ ajv.addKeyword('validateName', {
   //     if (schema === true) return true;
   //     else return schema.length === 5;
   //   },
+  validate: function fun(schema, data) {
+    // 自定义错误信息
+    fun.errors = [
+      {
+        keyword: 'validateName',
+        dataPath: '.name',
+        schemaPath: '#/properties/name/validateName',
+        params: { keyword: 'validateName' },
+        message: '自定义错误信息',
+      },
+    ];
+    return false;
+  },
 });
 const validate = ajv.compile(schema);
 const valid = validate({
