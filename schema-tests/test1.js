@@ -48,11 +48,20 @@ ajv.addFormat('test', (data) => {
 });
 // 扩展一个自定义关键字
 ajv.addKeyword('validateName', {
-  validate(schema, data) {
-    // console.log(schema, data); // true Jokcy11111@qq.com
-    if (schema === true) return true;
-    else return schema.length === 5;
+  compile(sch, parentSchema) {
+    console.log(sch, parentSchema); // false { type: 'string', validateName: 'false' }
+    // return true; // error，需要返回一个函数 Cannot create property 'errors' on boolean 'true'
+    return () => true;
   },
+  metaSchema: {
+    // 校验validateName关键字的类型
+    type: 'string', // Error: keyword schema is invalid: data should be number
+  },
+  //   validate(schema, data) {
+  //     // console.log(schema, data); // true Jokcy11111@qq.com
+  //     if (schema === true) return true;
+  //     else return schema.length === 5;
+  //   },
 });
 const validate = ajv.compile(schema);
 const valid = validate({
