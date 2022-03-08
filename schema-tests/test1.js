@@ -1,4 +1,5 @@
 const Ajv = require('ajv');
+const localize = require('ajv-i18n');
 /**
  * 每个子项都是string
  pets: {
@@ -89,4 +90,7 @@ const valid = validate({
   }
  ]
  */
-if (!valid) console.log(validate.errors);
+if (!valid) {
+  localize.zh(validate.errors);
+  console.log(validate.errors);
+}

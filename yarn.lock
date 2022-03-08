@@ -2191,6 +2191,11 @@ ajv-errors@^1.0.0:
   resolved "https://registry.npmmirror.com/ajv-errors/-/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"
   integrity sha512-DCRfO/4nQ+89p/RK43i8Ezd41EqdGIU4ld7nGF8OQ14oc/we5rEntLCUa7+jrn3nn83BosfwZA0wb4pon2o8iQ==
 
+ajv-i18n@3.5.0:
+  version "3.5.0"
+  resolved "http://r.npm.jintencent.com/ajv-i18n/-/ajv-i18n-3.5.0.tgz#63235ebc8779ac50cfa320aa123d93a0d6911b00"
+  integrity sha1-YyNevId5rFDPoyCqEj2ToNaRGwA=
+
 ajv-keywords@^3.1.0, ajv-keywords@^3.4.1, ajv-keywords@^3.5.2:
   version "3.5.2"
   resolved "https://registry.npmmirror.com/ajv-keywords/-/ajv-keywords-3.5.2.tgz#31f29da5ab6e00d1c2d329acf7b5929614d5014d"
