@@ -1,5 +1,7 @@
 import { defineComponent, PropType } from 'vue';
-import { Schema, SchemaTypes } from './types';
+import { Schema } from './types';
+import SchemaItem from './SchemaItem';
+
 export default defineComponent({
   name: 'SchemaForm',
   props: {
@@ -18,15 +20,16 @@ export default defineComponent({
   },
   // eslint-disable-next-line
   setup(props, { slots, emit, attrs }) {
+    // 这里还可以进行一些中转的处理操作
+    // eslint-disable-next-line
+    const handleChange = (v: any) => {
+      props.onChange(v);
+    };
     return () => {
-      const schema = props.schema;
-      const type = schema?.type;
-      switch (type) {
-        case SchemaTypes.STRING: {
-          return <input type="text" />;
-        }
-      }
-      return <div>This is Form</div>;
+      const { schema, value } = props;
+      return (
+        <SchemaItem schema={schema} value={value} onChange={handleChange} />
+      );
     };
   },
 });
