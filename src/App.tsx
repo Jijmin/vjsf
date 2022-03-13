@@ -1,22 +1,47 @@
-import { defineComponent, reactive, ref } from 'vue';
-const img = require('./assets/logo.png'); // eslint-disable-line
+import { defineComponent, ref, Ref } from 'vue';
+import MonacoEditor from './components/MonacoEditor';
+import { createUseStyles } from 'vue-jss';
+
+// eslint-disable-next-line
+function toJson(data: any) {
+  return JSON.stringify(data, null, 2);
+}
+const schema = {
+  type: 'string',
+};
+const useStyles = createUseStyles({
+  editor: {
+    minHeight: 400,
+  },
+});
 
 export default defineComponent({
   setup() {
-    const state = reactive({
-      name: 'zoe',
-    });
-    const numberRef = ref(1);
-    setInterval(() => {
-      state.name += '1';
-      numberRef.value += 1;
-    }, 1000);
+    // eslint-disable-next-line
+    const schemaRef: Ref<any> = ref(schema);
+    const handleCodeChange = (code: string) => {
+      // eslint-disable-next-line
+      let schema: any;
+      try {
+        schema = JSON.parse(code);
+      } catch (err) {
+        console.log(err);
+      }
+      schemaRef.value = schema;
+    };
+    const classesRef = useStyles();
+
     return () => {
-      const number = numberRef.value;
+      const code = toJson(schemaRef.value);
+      const classes = classesRef.value;
       return (
-        <div id="app">
-          <img src={img} alt="Vue log" />
-          <p>{state.name + number}</p>
+        <div>
+          <MonacoEditor
+            code={code}
+            onChange={handleCodeChange}
+            title="Schema"
+            class={classes.editor}
+          />
         </div>
       );
     };
