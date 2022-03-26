@@ -1,24 +1,13 @@
 import { FieldPropsDefine } from '../types';
 import { isObject } from '../utils';
-import { DefineComponent, defineComponent, inject } from 'vue';
-import { SchemaFormContextKey } from '../context';
-// import SchemaItem from '../SchemaItem';
-// console.log(SchemaItem); // 会造成循环引用
-
-type SchemaItemDefine = DefineComponent<typeof FieldPropsDefine>;
-// const TypeHelperComponent = defineComponent({
-//   props: FieldPropsDefine,
-// });
-// type SchemaItemDefine = typeof TypeHelperComponent;
+import { defineComponent } from 'vue';
+import { useVJSContext } from '../context';
 
 export default defineComponent({
   name: 'ObjectField',
   props: FieldPropsDefine,
   setup(props) {
-    const context: { SchemaItem: SchemaItemDefine } | undefined = inject(
-      SchemaFormContextKey,
-    );
-    if (!context) throw Error('SchemaForm should be used');
+    const context = useVJSContext();
 
     const handleObjectFieldChange = (key: string, v: any) => {
       const value: any = isObject(props.value) ? props.value : {};
