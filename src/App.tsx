@@ -139,7 +139,7 @@ export default defineComponent({
       const classes = classesRef.value;
       const selected = selectedRef.value;
 
-      console.log(methodRef);
+      //   console.log(methodRef);
 
       return (
         // <StyleThemeProvider>
@@ -189,7 +189,6 @@ export default defineComponent({
                 schema={demo.schema}
                 value={demo.data}
                 onChange={handleChange}
-                rootSchema={demo.schema}
               />
               {/* <SchemaForm
                   schema={demo.schema!}
