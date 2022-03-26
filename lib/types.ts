@@ -13,32 +13,42 @@ type SchemaRef = { $ref: string };
 
 // type Schema = any
 export interface Schema {
-  type: SchemaTypes | string;
-  // eslint-disable-next-line
+  type?: SchemaTypes | string;
   const?: any;
   format?: string;
-  // eslint-disable-next-line
+
+  title?: string;
   default?: any;
+
   properties?: {
     [key: string]: Schema | { $ref: string };
   };
   items?: Schema | Schema[] | SchemaRef;
+  uniqueItems?: any;
   dependencies?: {
     [key: string]: string[] | Schema | SchemaRef;
   };
   oneOf?: Schema[];
+  anyOf?: Schema[];
+  allOf?: Schema[];
+  // TODO: uiSchema
   // vjsf?: VueJsonSchemaConfig
   required?: string[];
-  // eslint-disable-next-line
   enum?: any[];
-  // eslint-disable-next-line
+  enumNames?: any[];
   enumKeyValue?: any[];
-  // eslint-disable-next-line
   additionalProperties?: any;
   additionalItems?: Schema;
+
+  minLength?: number;
+  maxLength?: number;
+  minimun?: number;
+  maximum?: number;
+  multipleOf?: number;
+  exclusiveMaximum?: number;
+  exclusiveMinimum?: number;
 }
 
-// SchemaItem 中的props其实会向下传递到各个组件，会出现重复定义，这里提取出来
 export const FieldPropsDefine = {
   schema: {
     type: Object as PropType<Schema>,
@@ -48,7 +58,6 @@ export const FieldPropsDefine = {
     required: true,
   },
   onChange: {
-    // eslint-disable-next-line
     type: Function as PropType<(v: any) => void>,
     required: true,
   },
