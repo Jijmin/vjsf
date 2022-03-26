@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Ajv from 'ajv';
 
 import { Schema } from './types';
@@ -56,6 +57,7 @@ export function resolveSchema(schema: Schema, rootSchema = {}, formData = {}) {
   }
 }
 
+// 对schema进行处理
 export function retrieveSchema(
   schema: any,
   rootSchema = {},
