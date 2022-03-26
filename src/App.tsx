@@ -98,11 +98,11 @@ export default defineComponent({
       const index = selectedRef.value;
       const d = demos[index];
       demo.schema = d.schema;
-      //   demo.data = d.default;
-      //   demo.uiSchema = d.uiSchema;
+      demo.data = d.default;
+      demo.uiSchema = d.uiSchema;
       demo.schemaCode = toJson(d.schema);
-      //   demo.dataCode = toJson(d.default);
-      //   demo.uiSchemaCode = toJson(d.uiSchema);
+      demo.dataCode = toJson(d.default);
+      demo.uiSchemaCode = toJson(d.uiSchema);
     });
 
     // eslint-disable-next-line

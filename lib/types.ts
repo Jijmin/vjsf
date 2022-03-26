@@ -1,3 +1,5 @@
+import { PropType } from 'vue';
+
 export enum SchemaTypes {
   'NUMBER' = 'number',
   'INTEGER' = 'integer',
@@ -35,3 +37,19 @@ export interface Schema {
   additionalProperties?: any;
   additionalItems?: Schema;
 }
+
+// SchemaItem 中的props其实会向下传递到各个组件，会出现重复定义，这里提取出来
+export const FieldPropsDefine = {
+  schema: {
+    type: Object as PropType<Schema>,
+    required: true,
+  },
+  value: {
+    required: true,
+  },
+  onChange: {
+    // eslint-disable-next-line
+    type: Function as PropType<(v: any) => void>,
+    required: true,
+  },
+} as const;

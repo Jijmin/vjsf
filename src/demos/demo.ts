@@ -3,4 +3,6 @@ export default {
   schema: {
     type: 'string',
   },
+  uiSchema: {},
+  default: 'zoe',
 };

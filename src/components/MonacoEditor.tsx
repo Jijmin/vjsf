@@ -7,7 +7,7 @@ import {
   shallowRef,
   PropType,
 } from 'vue';
-import * as Monaco from 'monaco-editor';
+import * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { createUseStyles } from 'vue-jss';
 
 const useStyles = createUseStyles({
