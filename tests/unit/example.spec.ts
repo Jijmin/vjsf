@@ -13,12 +13,58 @@ const HelloWorld = defineComponent({
   },
 });
 
+// beforeAll
 describe('HelloWorld.vue', () => {
-  it('renders props.msg when passed', () => {
+  // 预设和清理
+  beforeEach(() => {
+    console.log('beforeEach');
+  });
+  afterEach(() => {
+    console.log('afterEach');
+  });
+  beforeAll(() => {
+    console.log('beforeAll');
+  });
+  afterAll(() => {
+    console.log('afterAll');
+  });
+
+  // beforeEach
+  //   it('renders props.msg when passed', (done) => {
+  it('renders props.msg when passed', async () => {
     const msg = 'new message';
     const wrapper = shallowMount(HelloWorld, {
       props: { msg },
     });
-    expect(wrapper.text()).toMatch(msg);
+    // 断言
+    // expect(wrapper.text()).toEqual(msg);
+    // 异步
+    // setTimeout(() => {
+    //   expect(wrapper.text()).toEqual(msg);
+    //   done();
+    // });
+    // return new Promise<void>((resolve) => {
+    //   expect(wrapper.text()).toEqual('123');
+    //   resolve();
+    // });
+    await wrapper.setProps({
+      msg: '123',
+    });
+    expect(wrapper.text()).toEqual('123');
+  });
+  // afterEach
+
+  // beforeEach
+  // 需要语义化
+  it('should work', () => {
+    expect(1 + 1).toBe(2);
+  });
+  // afterEach
+});
+// afterAll
+
+describe('another', () => {
+  it('should work', () => {
+    expect(1 + 1).toBe(2);
   });
 });
