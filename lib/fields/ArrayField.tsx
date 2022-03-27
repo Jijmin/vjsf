@@ -2,6 +2,7 @@ import { FieldPropsDefine, Schema } from '../types';
 import { defineComponent, PropType } from 'vue';
 import { useVJSContext } from '../context';
 import { createUseStyles } from 'vue-jss';
+import SelectionWidget from '../widgets/Selection';
 
 const useStyles = createUseStyles({
   container: {
@@ -155,6 +156,9 @@ export default defineComponent({
       const isSelect = schema.items && (schema.items as any).enum;
 
       if (isMultiType) {
+        /**
+         * { items: { type: string } }
+         */
         const items: Schema[] = schema.items as any;
         const arr = Array.isArray(value) ? value : [];
         return items.map((s: Schema, index: number) => (
@@ -166,6 +170,9 @@ export default defineComponent({
           />
         ));
       } else if (!isSelect) {
+        /**
+         * { items: [ { type: string }, { type: number } ] }
+         */
         // 单类型数组
         const arr = Array.isArray(value) ? value : [];
         return arr.map((v: any, index: number) => (
@@ -185,8 +192,23 @@ export default defineComponent({
             />
           </ArrayItemWrapper>
         ));
+      } else {
+        /**
+         * { items: { type: string, enum: ['1', '2'] } }
+         */
+        const enumOptions = (schema as any).items.enum;
+        const options = enumOptions.map((e: any) => ({
+          key: e,
+          value: e,
+        }));
+        return (
+          <SelectionWidget
+            onChange={props.onChange}
+            value={props.value}
+            options={options}
+          />
+        );
       }
-      return <div>hehe</div>;
     };
   },
 });
