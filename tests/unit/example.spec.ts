@@ -1,70 +1,23 @@
-import { shallowMount } from '@vue/test-utils';
-import { defineComponent, h } from 'vue';
-// import HelloWorld from '@/components/HelloWorld.vue';
-const HelloWorld = defineComponent({
-  name: 'HelloWorld',
-  props: {
-    msg: String,
-  },
-  setup(props) {
-    return () => {
-      return h('div', props.msg);
-    };
-  },
-});
+import { mount } from '@vue/test-utils';
 
-// beforeAll
-describe('HelloWorld.vue', () => {
-  // 预设和清理
-  beforeEach(() => {
-    console.log('beforeEach');
-  });
-  afterEach(() => {
-    console.log('afterEach');
-  });
-  beforeAll(() => {
-    console.log('beforeAll');
-  });
-  afterAll(() => {
-    console.log('afterAll');
-  });
+import JsonSchemaForm, { NumberField } from '../../lib';
 
-  // beforeEach
-  //   it('renders props.msg when passed', (done) => {
-  it('renders props.msg when passed', async () => {
-    const msg = 'new message';
-    const wrapper = shallowMount(HelloWorld, {
-      props: { msg },
+describe('JsonSchemaForm', () => {
+  it('should render correct number field', async () => {
+    let value = '';
+    const wrapper = mount(JsonSchemaForm, {
+      props: {
+        schema: {
+          type: 'number',
+        },
+        value: value,
+        onChange: (v: any) => {
+          value = v;
+        },
+      },
     });
-    // 断言
-    // expect(wrapper.text()).toEqual(msg);
-    // 异步
-    // setTimeout(() => {
-    //   expect(wrapper.text()).toEqual(msg);
-    //   done();
-    // });
-    // return new Promise<void>((resolve) => {
-    //   expect(wrapper.text()).toEqual('123');
-    //   resolve();
-    // });
-    await wrapper.setProps({
-      msg: '123',
-    });
-    expect(wrapper.text()).toEqual('123');
-  });
-  // afterEach
-
-  // beforeEach
-  // 需要语义化
-  it('should work', () => {
-    expect(1 + 1).toBe(2);
-  });
-  // afterEach
-});
-// afterAll
-
-describe('another', () => {
-  it('should work', () => {
-    expect(1 + 1).toBe(2);
+    // 渲染了JsonSchemaForm组件，那可以找到NumberField节点
+    const numberField = wrapper.findComponent(NumberField);
+    expect(numberField.exists()).toBeTruthy();
   });
 });

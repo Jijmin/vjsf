@@ -18,10 +18,8 @@ export default defineComponent({
       required: true,
     },
   },
-  // eslint-disable-next-line
   setup(props, { slots, emit, attrs }) {
     // 这里还可以进行一些中转的处理操作
-    // eslint-disable-next-line
     const handleChange = (v: any) => {
       props.onChange(v);
     };
