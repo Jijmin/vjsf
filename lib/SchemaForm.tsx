@@ -17,10 +17,10 @@ export default defineComponent({
       type: Function as PropType<(v: any) => void>,
       required: true,
     },
-    theme: {
-      type: Object as PropType<Theme>,
-      required: true,
-    },
+    // theme: {
+    //   type: Object as PropType<Theme>,
+    //   required: true,
+    // },
   },
   setup(props, { slots, emit, attrs }) {
     // 这里还可以进行一些中转的处理操作
@@ -35,7 +35,7 @@ export default defineComponent({
     // 不过我们这里SchemaItem是一个固定的组件，不会进行动态变化，直接使用普通对象就可以了
     const context: any = {
       SchemaItem,
-      theme: props.theme,
+      //   theme: props.theme,
     };
     // 直接这样使用不好维护，万一父节点更改，会影响所有使用的地方。而且后面别的地方又provide了vjsf会被覆盖
     // provide('vjsf', context);
