@@ -72,3 +72,28 @@ export type CommonFieldType = DefineComponent<typeof FieldPropsDefine>;
 //   props: FieldPropsDefine,
 // });
 // type SchemaItemDefine = typeof TypeHelperComponent;
+
+const CommonWidgetPropsDefine = {
+  value: {},
+  onChange: {
+    type: Function as PropType<(v: any) => void>,
+    required: true,
+  },
+} as const;
+const SelectionWidgetPropsDefine = {
+  ...CommonWidgetPropsDefine,
+  options: {
+    type: Array as PropType<{ key: string; value: any }[]>,
+    required: true,
+  },
+};
+
+type CommonWidgetDefine = DefineComponent<typeof CommonWidgetPropsDefine>;
+type SelectionWidgetDefine = DefineComponent<typeof SelectionWidgetPropsDefine>;
+export interface Theme {
+  widgets: {
+    SelectionWidget: SelectionWidgetDefine;
+    TextWidget: CommonWidgetDefine;
+    NumberWidget: CommonWidgetDefine;
+  };
+}

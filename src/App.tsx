@@ -6,6 +6,7 @@ import MonacoEditor from './components/MonacoEditor';
 import demos from './demos';
 
 import SchemaForm from '../lib';
+import themeDefault from '../lib/theme-default';
 
 // TODO: 在lib中export
 // eslint-disable-next-line
@@ -186,6 +187,7 @@ export default defineComponent({
             </div>
             <div class={classes.form}>
               <SchemaForm
+                theme={themeDefault as any}
                 schema={demo.schema}
                 value={demo.data}
                 onChange={handleChange}
