@@ -36,6 +36,12 @@ yarn lint
 yarn test:unit -- --coverage
 ```
 
+### 关键字匹配进行测试用例
+
+```
+yarn test:unit -- -t=multi
+```
+
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).

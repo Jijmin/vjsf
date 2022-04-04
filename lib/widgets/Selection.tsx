@@ -28,7 +28,7 @@ export default defineComponent({
       },
     );
     watchEffect(() => {
-      console.log(currentValueRef.value, '------------->');
+      //   console.log(currentValueRef.value, '------------->');
     });
 
     return () => {
