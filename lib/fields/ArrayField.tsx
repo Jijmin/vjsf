@@ -1,4 +1,4 @@
-import { FieldPropsDefine, Schema } from '../types';
+import { FieldPropsDefine, Schema, SelectionWidgetNames } from '../types';
 import { defineComponent, PropType } from 'vue';
 import { useVJSContext } from '../context';
 import { createUseStyles } from 'vue-jss';
@@ -150,7 +150,7 @@ export default defineComponent({
       props.onChange(arr);
     };
 
-    const SelectionWidgetRef = getWidget('SelectionWidget');
+    const SelectionWidgetRef = getWidget(SelectionWidgetNames.SelectionWidget);
 
     return () => {
       const { schema, rootSchema, value } = props;

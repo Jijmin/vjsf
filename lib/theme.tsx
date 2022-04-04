@@ -6,7 +6,7 @@ import {
   PropType,
   provide,
 } from 'vue';
-import { Theme } from '../lib/types';
+import { Theme, SelectionWidgetNames, CommonWidgetNames } from './types';
 
 const THEME_PROVIDER_KEY = Symbol();
 
@@ -27,7 +27,9 @@ const ThemeProvider = defineComponent({
 });
 
 // 在组件具体使用widget的时候才会调用
-export function getWidget(name: string) {
+export function getWidget<T extends SelectionWidgetNames | CommonWidgetNames>(
+  name: T,
+) {
   const context: ComputedRef<Theme> | undefined = inject<ComputedRef<Theme>>(
     THEME_PROVIDER_KEY,
   );
@@ -36,7 +38,7 @@ export function getWidget(name: string) {
   }
 
   const widgetRef = computed(() => {
-    return (context.value.widgets as any)[name];
+    return context.value.widgets[name];
   });
 
   return widgetRef;
