@@ -1,18 +1,27 @@
-import { FieldPropsDefine } from '../types';
+import { FieldPropsDefine, CommonWidgetNames } from '../types';
 import { defineComponent } from 'vue';
+import { getWidget } from '../theme';
 
 export default defineComponent({
   name: 'StringField',
   props: FieldPropsDefine,
   setup(props) {
-    const handleChange = (e: any) => {
-      //   console.log(e);
-      // 这里的props是setup进行编译后放到setup内部闭包中的值，这里需要进行声明下
-      props.onChange(e.target.value);
+    // 需要在这里实现一些自定义的onChange动作，而不是直接传递父级的
+    const handleChange = (v: string) => {
+      console.log('自定义处理', v);
+      props.onChange(v);
     };
+    const TextWidgetRef = getWidget(CommonWidgetNames.TextWidget);
     return () => {
-      const { value } = props;
-      return <input value={value} onInput={handleChange} />;
+      // 但是这种方式会有问题，如果我在handleChange没有做改动，就不会双向绑定了
+      const { schema, rootSchema, onChange, ...rest } = props;
+      const TextWidget = TextWidgetRef.value;
+      // 直接将handleChange传递给 TextWidget 的 onChange 方法，发现不成功，会合并为一个数组形式，父亲的 onChange 和自定义的 onChange
+      // 需要关掉配置babel.config.js {mergeProps: false}
+      //   return <TextWidget {...rest} onChange={handleChange} />;
+      return <TextWidget {...rest} onChange={handleChange} />;
+      //   const { value } = props;
+      //   return <input value={value} onInput={handleChange} />;
     };
   },
 });

@@ -1,4 +1,5 @@
-import SelectionWidget from './Selection';
+import SelectionWidget from './SelectionWidget';
+import TextWidget from './TextWidget';
 import { CommonWidgetPropsDefine } from '../types';
 import { defineComponent, DefineComponent } from 'vue';
 
@@ -14,7 +15,7 @@ const CommonWidget: DefineComponent<typeof CommonWidgetPropsDefine> = defineComp
 export default {
   widgets: {
     SelectionWidget,
-    TextWidget: CommonWidget,
+    TextWidget,
     NumberWidget: CommonWidget,
   },
 };

@@ -1,7 +1,8 @@
 import { defineComponent, ref, watch, watchEffect, DefineComponent } from 'vue';
 import { SelectionWidgetPropsDefine, SelectionWidgetDefine } from '../types';
 
-// const Selection: SelectionWidgetDefine = defineComponent(
+// //@ts-ignore
+// const Selection: SelectionWidgetDefine = defineComponent({
 const Selection: DefineComponent<typeof SelectionWidgetPropsDefine> = defineComponent(
   {
     name: 'SelectionWidget',
