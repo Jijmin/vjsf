@@ -6,10 +6,10 @@ const TextWidget: DefineComponent<typeof CommonWidgetPropsDefine> = defineCompon
     props: CommonWidgetPropsDefine,
     setup(props) {
       const handleChange = (e: any) => {
-        console.log(e);
+        const value = e.target.value;
         e.target.value = props.value;
         // 这里的props是setup进行编译后放到setup内部闭包中的值，这里需要进行声明下
-        props.onChange(e.target.value);
+        props.onChange(value);
         // nextTick(() => {
         //   if (props.value !== e.target.value) {
         //     e.target.value = props.value;
