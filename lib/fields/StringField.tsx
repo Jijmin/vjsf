@@ -1,5 +1,5 @@
 import { FieldPropsDefine, CommonWidgetNames } from '../types';
-import { defineComponent } from 'vue';
+import { defineComponent, mergeProps } from 'vue';
 import { getWidget } from '../theme';
 
 export default defineComponent({
@@ -8,8 +8,8 @@ export default defineComponent({
   setup(props) {
     // 需要在这里实现一些自定义的onChange动作，而不是直接传递父级的
     const handleChange = (v: string) => {
-      console.log('自定义处理', v);
-      props.onChange(v);
+      //   console.log('自定义处理', v);
+      //   props.onChange(v + '1');
     };
     const TextWidgetRef = getWidget(CommonWidgetNames.TextWidget);
     return () => {
@@ -17,7 +17,7 @@ export default defineComponent({
       const { schema, rootSchema, onChange, ...rest } = props;
       const TextWidget = TextWidgetRef.value;
       // 直接将handleChange传递给 TextWidget 的 onChange 方法，发现不成功，会合并为一个数组形式，父亲的 onChange 和自定义的 onChange
-      // 需要关掉配置babel.config.js {mergeProps: false}
+      // 需要关掉配置babel.config.js {mergeProps: false} ，但是貌似没生效
       //   return <TextWidget {...rest} onChange={handleChange} />;
       return <TextWidget {...rest} onChange={handleChange} />;
       //   const { value } = props;
