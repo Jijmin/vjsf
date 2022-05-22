@@ -11,6 +11,7 @@ import { Schema, Theme } from './types';
 import SchemaItem from './SchemaItem';
 import { SchemaFormContextKey } from './context';
 import Ajv, { Options } from 'ajv';
+import { validateFormData } from './validator';
 
 interface ContextRef {
   doValidate: () => {
@@ -45,6 +46,10 @@ export default defineComponent({
     ajvOptions: {
       // 创建ajv实例的配置项
       type: Object as PropType<Options>,
+    },
+    locale: {
+      type: String,
+      default: 'zh',
     },
     // theme: {
     //   type: Object as PropType<Theme>,
@@ -84,15 +89,18 @@ export default defineComponent({
           props.contextRef.value = {
             doValidate() {
               console.log('------------->');
-              // 进行表单校验, validate有可能会返回PromiseLike，在ajv中有提供异步校验的功能，但是这边目前没有异步，这里返回的肯定是boolean
-              const valid = validatorRef.value.validate(
-                props.schema,
+              //   // 进行表单校验, validate有可能会返回PromiseLike，在ajv中有提供异步校验的功能，但是这边目前没有异步，这里返回的肯定是boolean
+              //   const valid = validatorRef.value.validate(
+              //     props.schema,
+              //     props.value,
+              //   ) as boolean;
+              const result = validateFormData(
+                validatorRef.value,
                 props.value,
-              ) as boolean;
-              return {
-                valid,
-                errors: validatorRef.value.errors || [],
-              };
+                props.schema,
+                props.locale,
+              );
+              return result;
             },
           };
         }
