@@ -1,7 +1,16 @@
-import { defineComponent, PropType, provide, Ref, watch } from 'vue';
+import {
+  defineComponent,
+  PropType,
+  provide,
+  Ref,
+  shallowRef,
+  watch,
+  watchEffect,
+} from 'vue';
 import { Schema, Theme } from './types';
 import SchemaItem from './SchemaItem';
 import { SchemaFormContextKey } from './context';
+import Ajv, { Options } from 'ajv';
 
 interface ContextRef {
   doValidate: () => {
@@ -9,6 +18,12 @@ interface ContextRef {
     valid: boolean;
   };
 }
+
+// 默认的一些ajv的配置
+const defaultAjvOptions: Options = {
+  allErrors: true,
+  jsonPointers: true,
+};
 
 export default defineComponent({
   name: 'SchemaForm',
@@ -26,6 +41,10 @@ export default defineComponent({
     },
     contextRef: {
       type: Object as PropType<Ref<ContextRef | undefined>>,
+    },
+    ajvOptions: {
+      // 创建ajv实例的配置项
+      type: Object as PropType<Options>,
     },
     // theme: {
     //   type: Object as PropType<Theme>,
@@ -48,6 +67,15 @@ export default defineComponent({
       //   theme: props.theme,
     };
 
+    // 创建ajv的实例,props.ajvOptions可能是会更新的，需要使用watchEffect
+    const validatorRef: Ref<Ajv.Ajv> = shallowRef() as any;
+    watchEffect(() => {
+      validatorRef.value = new Ajv({
+        ...defaultAjvOptions,
+        ...props.ajvOptions,
+      });
+    });
+
     // props.contextRef可能是一个undefined
     watch(
       () => props.contextRef,
@@ -56,9 +84,14 @@ export default defineComponent({
           props.contextRef.value = {
             doValidate() {
               console.log('------------->');
+              // 进行表单校验, validate有可能会返回PromiseLike，在ajv中有提供异步校验的功能，但是这边目前没有异步，这里返回的肯定是boolean
+              const valid = validatorRef.value.validate(
+                props.schema,
+                props.value,
+              ) as boolean;
               return {
-                valid: true,
-                errors: [],
+                valid,
+                errors: validatorRef.value.errors || [],
               };
             },
           };

@@ -9,7 +9,8 @@ export default defineComponent({
     // 需要在这里实现一些自定义的onChange动作，而不是直接传递父级的
     const handleChange = (v: string) => {
       //   console.log('自定义处理', v);
-      props.onChange(v + '1');
+      //   props.onChange(v + '1');
+      props.onChange(v);
     };
     const TextWidgetRef = getWidget(CommonWidgetNames.TextWidget);
     return () => {

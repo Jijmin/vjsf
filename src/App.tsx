@@ -205,7 +205,9 @@ export default defineComponent({
                   contextRef={methodRef}
                   value={demo.data}
                 /> */}
-              <button onClick={() => contextRef.value.doValidate()}>
+              <button
+                onClick={() => console.log(contextRef.value.doValidate())}
+              >
                 校 验
               </button>
             </div>
