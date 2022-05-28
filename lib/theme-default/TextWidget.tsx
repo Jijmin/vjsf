@@ -1,5 +1,7 @@
 import { CommonWidgetPropsDefine } from '../types';
-import { defineComponent, DefineComponent, nextTick } from 'vue';
+import { defineComponent, DefineComponent } from 'vue';
+
+import FormItem from './FormItem';
 
 const TextWidget: DefineComponent<typeof CommonWidgetPropsDefine> = defineComponent(
   {
@@ -17,7 +19,11 @@ const TextWidget: DefineComponent<typeof CommonWidgetPropsDefine> = defineCompon
         //   }
         // });
       };
-      return () => <input value={props.value as any} onInput={handleChange} />;
+      return () => (
+        <FormItem {...props}>
+          <input value={props.value as any} onInput={handleChange} />
+        </FormItem>
+      );
     },
   },
 );

@@ -214,6 +214,7 @@ export default defineComponent({
             onChange={props.onChange}
             value={props.value}
             options={options}
+            schema={schema}
           />
         );
       }
