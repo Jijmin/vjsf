@@ -18,9 +18,15 @@ export default defineComponent({
     };
     const NumberWidgetRef = getWidget(CommonWidgetNames.NumberWidget);
     return () => {
-      const { schema, rootSchema, onChange, ...rest } = props;
+      const { schema, rootSchema, errorSchema, onChange, ...rest } = props;
       const NumberWidget = NumberWidgetRef.value;
-      return <NumberWidget {...rest} onChange={handleChange} />;
+      return (
+        <NumberWidget
+          {...rest}
+          errors={errorSchema.__errors}
+          onChange={handleChange}
+        />
+      );
     };
   },
 });

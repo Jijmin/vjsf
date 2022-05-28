@@ -11,7 +11,7 @@ import { Schema, Theme } from './types';
 import SchemaItem from './SchemaItem';
 import { SchemaFormContextKey } from './context';
 import Ajv, { Options } from 'ajv';
-import { validateFormData } from './validator';
+import { validateFormData, ErrorSchema } from './validator';
 
 interface ContextRef {
   doValidate: () => {
@@ -72,6 +72,9 @@ export default defineComponent({
       //   theme: props.theme,
     };
 
+    // 声明一个ref，向下传递错误信息
+    const errorSchemaRef: Ref<ErrorSchema> = shallowRef({});
+
     // 创建ajv的实例,props.ajvOptions可能是会更新的，需要使用watchEffect
     const validatorRef: Ref<Ajv.Ajv> = shallowRef() as any;
     watchEffect(() => {
@@ -94,12 +97,15 @@ export default defineComponent({
               //     props.schema,
               //     props.value,
               //   ) as boolean;
+              // 这里获取到错误信息
               const result = validateFormData(
                 validatorRef.value,
                 props.value,
                 props.schema,
                 props.locale,
               );
+              // 将错误信息赋值给errorSchemaRef，为了可以向下传递
+              errorSchemaRef.value = result.errorSchema;
               return result;
             },
           };
@@ -120,6 +126,7 @@ export default defineComponent({
           value={value}
           rootSchema={schema}
           onChange={handleChange}
+          errorSchema={errorSchemaRef.value || {}}
         />
       );
     };

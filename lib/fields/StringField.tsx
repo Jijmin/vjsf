@@ -15,12 +15,18 @@ export default defineComponent({
     const TextWidgetRef = getWidget(CommonWidgetNames.TextWidget);
     return () => {
       // 但是这种方式会有问题，如果我在handleChange没有做改动，就不会双向绑定了
-      const { schema, rootSchema, onChange, ...rest } = props;
+      const { schema, rootSchema, errorSchema, onChange, ...rest } = props;
       const TextWidget = TextWidgetRef.value;
       // 直接将handleChange传递给 TextWidget 的 onChange 方法，发现不成功，会合并为一个数组形式，父亲的 onChange 和自定义的 onChange
       // 需要关掉配置babel.config.js {mergeProps: false} ，但是貌似没生效
       //   return <TextWidget {...rest} onChange={handleChange} />;
-      return <TextWidget {...rest} onChange={handleChange} />;
+      return (
+        <TextWidget
+          {...rest}
+          errors={errorSchema.__errors}
+          onChange={handleChange}
+        />
+      );
       //   const { value } = props;
       //   return <input value={value} onInput={handleChange} />;
     };

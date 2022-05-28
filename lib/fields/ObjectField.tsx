@@ -20,7 +20,7 @@ export default defineComponent({
     };
 
     return () => {
-      const { schema, rootSchema, value } = props;
+      const { schema, rootSchema, value, errorSchema } = props;
       // 通过SchemaItem进行子项的创建
       const { SchemaItem } = context;
       const properties = schema.properties || {};
@@ -35,6 +35,7 @@ export default defineComponent({
           value={currentValue[k]}
           key={index}
           onChange={(v: any) => handleObjectFieldChange(k, v)}
+          errorSchema={errorSchema[k] || {}}
         />
       ));
     };
