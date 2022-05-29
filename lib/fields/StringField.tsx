@@ -16,6 +16,11 @@ export default defineComponent({
       const widgetRef = getWidget(CommonWidgetNames.TextWidget, props.uiSchema);
       return widgetRef.value;
     });
+
+    const widgetOptionsRef = computed(() => {
+      const { widget, properties, items, ...rest } = props.uiSchema;
+      return rest;
+    });
     return () => {
       // 但是这种方式会有问题，如果我在handleChange没有做改动，就不会双向绑定了
       const { rootSchema, errorSchema, onChange, ...rest } = props;
@@ -28,6 +33,7 @@ export default defineComponent({
           {...rest}
           errors={errorSchema.__errors}
           onChange={handleChange}
+          options={widgetOptionsRef.value}
         />
       );
       //   const { value } = props;

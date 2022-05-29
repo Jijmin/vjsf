@@ -1,5 +1,5 @@
 import { CommonWidgetPropsDefine } from '../types';
-import { defineComponent, DefineComponent } from 'vue';
+import { computed, defineComponent, DefineComponent } from 'vue';
 
 import { withFormItem } from './FormItem';
 
@@ -19,7 +19,18 @@ const TextWidget: DefineComponent<typeof CommonWidgetPropsDefine> = withFormItem
         //   }
         // });
       };
-      return () => <input value={props.value as any} onInput={handleChange} />;
+      const styleRef = computed(() => {
+        return {
+          color: (props.options && props.options.color) || 'black',
+        };
+      });
+      return () => (
+        <input
+          value={props.value as any}
+          onInput={handleChange}
+          style={styleRef.value}
+        />
+      );
     },
   }),
 );

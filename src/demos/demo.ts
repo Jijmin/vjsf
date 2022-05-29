@@ -31,6 +31,9 @@ export default {
       pass1: {
         widget: PasswordWidget,
       },
+      pass2: {
+        color: 'red',
+      },
     },
   },
   default: 1,
