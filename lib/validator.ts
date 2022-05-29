@@ -1,6 +1,7 @@
 import Ajv from 'ajv';
 import toPath from 'lodash.topath';
 import { Schema } from './types';
+import { isObject } from './utils';
 const i18n = require('ajv-i18n'); // eslint-disable-line
 
 interface TransformErrorObject {
@@ -85,6 +86,7 @@ export function validateFormData(
   formData: any,
   schema: Schema,
   locale: string,
+  customValidate?: (data: any, errors: any) => void,
 ) {
   let validationError: any = null; // 记录错误信息
   try {
@@ -107,9 +109,76 @@ export function validateFormData(
 
   const errorSchema = toErrorSchema(errors);
 
+  // 非自定义场景
+  if (!customValidate) {
+    return {
+      errors,
+      errorSchema,
+      valid: errors.length === 0,
+    };
+  }
+
+  /**
+   * {
+   *    obj: {
+   *        a: { b: str },
+   *        __errors: []
+   *    }
+   * }
+   *
+   * raw.obj.a
+   */
+  // 自定义错误信息
+  const proxy = createErrorProxy();
+  customValidate(formData, proxy);
+  // 进行一个合并
+  const newErrorSchema = mergetObjects(errorSchema, proxy, true);
   return {
     errors,
-    errorSchema,
+    errorSchema: newErrorSchema,
     valid: errors.length === 0,
   };
+}
+
+function createErrorProxy() {
+  const raw = {};
+  return new Proxy(raw, {
+    get(target, key, reciver) {
+      if (key === 'addError') {
+        // 需要根据层级raw.obj.a增加一个存放错误信息的数组：__errors
+        return (msg: string) => {
+          const __errors = Reflect.get(target, '__errors', reciver);
+          if (__errors && Array.isArray(__errors)) {
+            __errors.push(msg);
+          } else {
+            (target as any).__errors = [msg];
+          }
+        };
+      }
+      const res = Reflect.get(target, key, reciver);
+      if (res === undefined) {
+        const p: any = createErrorProxy();
+        (target as any)[key] = p;
+        return p;
+      }
+      return res;
+    },
+  });
+}
+
+export function mergetObjects(obj1: any, obj2: any, concatArrays = false) {
+  // Recursively merge deeply nested objects
+  const accumulator = Object.assign({}, obj1); // Prevent mutation of source object
+  return Object.keys(obj2).reduce((accumulator, key) => {
+    const left = obj1 ? obj1[key] : {};
+    const right = obj2[key];
+    if (obj1 && obj1.hasOwnProperty(key) && isObject(right)) {
+      accumulator[key] = mergetObjects(left, right, concatArrays); // 递归
+    } else if (concatArrays && Array.isArray(left) && Array.isArray(right)) {
+      accumulator[key] = left.concat(right);
+    } else {
+      accumulator[key] = right;
+    }
+    return accumulator;
+  }, accumulator);
 }

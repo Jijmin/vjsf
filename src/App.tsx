@@ -85,6 +85,7 @@ export default defineComponent({
       schemaCode: string;
       dataCode: string;
       uiSchemaCode: string;
+      customValidate: ((d: any, e: any) => void) | undefined;
     } = reactive({
       schema: null,
       data: {},
@@ -92,18 +93,20 @@ export default defineComponent({
       schemaCode: '',
       dataCode: '',
       uiSchemaCode: '',
+      customValidate: undefined,
     });
 
     // 有下面数据的变化，都会进行一个赋值的操作
     watchEffect(() => {
       const index = selectedRef.value;
-      const d = demos[index];
+      const d: any = demos[index];
       demo.schema = d.schema;
       demo.data = d.default;
       demo.uiSchema = d.uiSchema;
       demo.schemaCode = toJson(d.schema);
       demo.dataCode = toJson(d.default);
       demo.uiSchemaCode = toJson(d.uiSchema);
+      demo.customValidate = d.customValidate;
     });
 
     // eslint-disable-next-line
@@ -196,6 +199,7 @@ export default defineComponent({
                   onChange={handleChange}
                   contextRef={contextRef}
                   ref={nameRef}
+                  customValidate={demo.customValidate}
                 />
               </ThemeProvider>
               {/* <SchemaForm
