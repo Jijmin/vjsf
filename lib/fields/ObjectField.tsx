@@ -20,7 +20,7 @@ export default defineComponent({
     };
 
     return () => {
-      const { schema, rootSchema, value, errorSchema } = props;
+      const { schema, rootSchema, value, errorSchema, uiSchema } = props;
       // 通过SchemaItem进行子项的创建
       const { SchemaItem } = context;
       const properties = schema.properties || {};
@@ -31,6 +31,7 @@ export default defineComponent({
       return Object.keys(properties).map((k: string, index: number) => (
         <SchemaItem
           schema={properties[k]}
+          uiSchema={uiSchema.properties ? uiSchema.properties[k] || {} : {}}
           rootSchema={rootSchema}
           value={currentValue[k]}
           key={index}
