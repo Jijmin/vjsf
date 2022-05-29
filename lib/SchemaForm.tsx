@@ -2,6 +2,7 @@ import {
   defineComponent,
   PropType,
   provide,
+  ref,
   Ref,
   shallowRef,
   watch,
@@ -14,16 +15,16 @@ import Ajv, { Options } from 'ajv';
 import { validateFormData, ErrorSchema } from './validator';
 
 interface ContextRef {
-  doValidate: () => {
+  doValidate: () => Promise<{
     errors: any[];
     valid: boolean;
-  };
+  }>;
 }
 
 // 默认的一些ajv的配置
 const defaultAjvOptions: Options = {
   allErrors: true,
-  jsonPointers: true,
+  //   jsonPointers: true,
 };
 
 export default defineComponent({
@@ -87,6 +88,41 @@ export default defineComponent({
       });
     });
 
+    const validateResolveRef = ref();
+    const validateIndex = ref(0);
+
+    // 数据变化后重新校验的这个过程
+    watch(
+      () => props.value,
+      () => {
+        if (validateResolveRef.value) {
+          doValidate();
+        }
+      },
+      { deep: true },
+    );
+
+    async function doValidate() {
+      console.log('start validate --------->');
+      const index = (validateIndex.value += 1);
+      // 这里获取到错误信息
+      const result = await validateFormData(
+        validatorRef.value,
+        props.value,
+        props.schema,
+        props.locale,
+        props.customValidate,
+      );
+      // 如果不相等，表示这个中间又进行了validate，之前的结果不需要了，直接返回
+      if (index !== validateIndex.value) return;
+      console.log('end validate --------->');
+      // 将错误信息赋值给errorSchemaRef，为了可以向下传递
+      errorSchemaRef.value = result.errorSchema;
+      // 将结果resolve出去
+      validateResolveRef.value(result);
+      validateResolveRef.value = undefined; // 清空
+      //   return result;
+    }
     // props.contextRef可能是一个undefined
     watch(
       () => props.contextRef,
@@ -94,23 +130,27 @@ export default defineComponent({
         if (props.contextRef) {
           props.contextRef.value = {
             doValidate() {
-              console.log('------------->');
-              //   // 进行表单校验, validate有可能会返回PromiseLike，在ajv中有提供异步校验的功能，但是这边目前没有异步，这里返回的肯定是boolean
-              //   const valid = validatorRef.value.validate(
-              //     props.schema,
+              return new Promise((resolve) => {
+                validateResolveRef.value = resolve;
+                doValidate();
+              });
+              //   console.log('------------->');
+              //   //   // 进行表单校验, validate有可能会返回PromiseLike，在ajv中有提供异步校验的功能，但是这边目前没有异步，这里返回的肯定是boolean
+              //   //   const valid = validatorRef.value.validate(
+              //   //     props.schema,
+              //   //     props.value,
+              //   //   ) as boolean;
+              //   // 这里获取到错误信息
+              //   const result = await validateFormData(
+              //     validatorRef.value,
               //     props.value,
-              //   ) as boolean;
-              // 这里获取到错误信息
-              const result = validateFormData(
-                validatorRef.value,
-                props.value,
-                props.schema,
-                props.locale,
-                props.customValidate,
-              );
-              // 将错误信息赋值给errorSchemaRef，为了可以向下传递
-              errorSchemaRef.value = result.errorSchema;
-              return result;
+              //     props.schema,
+              //     props.locale,
+              //     props.customValidate,
+              //   );
+              //   // 将错误信息赋值给errorSchemaRef，为了可以向下传递
+              //   errorSchemaRef.value = result.errorSchema;
+              //   return result;
             },
           };
         }

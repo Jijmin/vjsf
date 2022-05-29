@@ -81,7 +81,7 @@ function transformErrors(
   });
 }
 
-export function validateFormData(
+export async function validateFormData(
   validator: Ajv.Ajv,
   formData: any,
   schema: Schema,
@@ -130,7 +130,8 @@ export function validateFormData(
    */
   // 自定义错误信息
   const proxy = createErrorProxy();
-  customValidate(formData, proxy);
+  // 异步调用
+  await customValidate(formData, proxy);
   // 进行一个合并
   const newErrorSchema = mergetObjects(errorSchema, proxy, true);
   return {
