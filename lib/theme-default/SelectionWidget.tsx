@@ -1,10 +1,11 @@
 import { defineComponent, ref, watch, watchEffect, DefineComponent } from 'vue';
 import { SelectionWidgetPropsDefine, SelectionWidgetDefine } from '../types';
+import { withFormItem } from './FormItem';
 
 // //@ts-ignore
 // const Selection: SelectionWidgetDefine = defineComponent({
-const Selection: DefineComponent<typeof SelectionWidgetPropsDefine> = defineComponent(
-  {
+const Selection: DefineComponent<typeof SelectionWidgetPropsDefine> = withFormItem(
+  defineComponent({
     name: 'SelectionWidget',
     props: SelectionWidgetPropsDefine,
     setup(props) {
@@ -36,6 +37,6 @@ const Selection: DefineComponent<typeof SelectionWidgetPropsDefine> = defineComp
         );
       };
     },
-  },
+  }),
 );
 export default Selection;

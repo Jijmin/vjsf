@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue';
-import { CommonWidgetPropsDefine } from '../types';
+import { CommonWidgetPropsDefine, CommonWidgetDefine } from '../types';
 import { createUseStyles } from 'vue-jss';
 
 const useStyles = createUseStyles({
@@ -17,7 +17,7 @@ const useStyles = createUseStyles({
   },
 });
 
-export default defineComponent({
+const FormItem = defineComponent({
   name: 'FormItem',
   props: CommonWidgetPropsDefine,
   setup(props, { slots }) {
@@ -39,3 +39,22 @@ export default defineComponent({
     };
   },
 });
+export default FormItem;
+
+// HOC: Higher Order Component: 高阶组件
+// 解藕：提供一个FormItem的能力，但是FormItem的变更不会影响各个Widget
+export function withFormItem(Widget: any) {
+  return defineComponent({
+    name: `Wrapped${Widget.name}`,
+    props: CommonWidgetPropsDefine,
+    setup(props, { attrs }) {
+      return () => {
+        return (
+          <FormItem {...props}>
+            <Widget {...props} {...attrs} />
+          </FormItem>
+        );
+      };
+    },
+  }) as any;
+}
