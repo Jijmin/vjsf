@@ -1,5 +1,5 @@
 import { FieldPropsDefine, CommonWidgetNames } from '../types';
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { getWidget } from '../theme';
 
 export default defineComponent({
@@ -12,7 +12,10 @@ export default defineComponent({
       //   props.onChange(v + '1');
       props.onChange(v);
     };
-    const TextWidgetRef = getWidget(CommonWidgetNames.TextWidget);
+    const TextWidgetRef = computed(() => {
+      const widgetRef = getWidget(CommonWidgetNames.TextWidget, props.uiSchema);
+      return widgetRef.value;
+    });
     return () => {
       // 但是这种方式会有问题，如果我在handleChange没有做改动，就不会双向绑定了
       const { rootSchema, errorSchema, onChange, ...rest } = props;
