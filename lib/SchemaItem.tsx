@@ -7,6 +7,7 @@ import ArrayField from './fields/ArrayField';
 // import StringField from './fields/StringField.vue';
 import { SchemaTypes, FieldPropsDefine } from './types';
 import { retrieveSchema } from './utils';
+import { useVJSContext } from './context';
 
 // 根据不同类型将渲染对应的schema分发给对应的组件
 export default defineComponent({
@@ -14,10 +15,13 @@ export default defineComponent({
   props: FieldPropsDefine,
   // eslint-disable-next-line
   setup(props) {
+    const formContext = useVJSContext();
     // 变的时候才重新计算
     const retrievedSchemaRef = computed(() => {
       const { schema, rootSchema, value } = props;
-      return retrieveSchema(schema, rootSchema, value);
+      return formContext.transformSchemaRef.value(
+        retrieveSchema(schema, rootSchema, value),
+      );
     });
     return () => {
       // 根据type设置不同的component

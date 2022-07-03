@@ -9,7 +9,13 @@ import {
   watch,
   watchEffect,
 } from 'vue';
-import { CommonWidgetDefine, CustomFormat, Schema, UISchema } from './types';
+import {
+  CommonWidgetDefine,
+  CustomFormat,
+  Schema,
+  UISchema,
+  CustomKeyword,
+} from './types';
 import SchemaItem from './SchemaItem';
 import { SchemaFormContextKey } from './context';
 import Ajv, { Options } from 'ajv';
@@ -59,6 +65,9 @@ export default defineComponent({
     customFormats: {
       type: [Array, Object] as PropType<CustomFormat[] | CustomFormat>,
     },
+    customKeywords: {
+      type: [Array, Object] as PropType<CustomKeyword[] | CustomKeyword>,
+    },
     uiSchema: {
       type: Object as PropType<UISchema>,
     },
@@ -87,6 +96,24 @@ export default defineComponent({
       }
     });
 
+    const transformSchemaRef = computed(() => {
+      if (props.customKeywords) {
+        const customKeywords = Array.isArray(props.customKeywords)
+          ? props.customKeywords
+          : [props.customKeywords];
+        return (schema: Schema) => {
+          let newSchema = schema;
+          customKeywords.forEach((keyword) => {
+            if ((newSchema as any)[keyword.name]) {
+              newSchema = keyword.transformSchema(schema);
+            }
+          });
+          return newSchema;
+        };
+      }
+      return (s: Schema) => s;
+    });
+
     // 解决循环引用问题，如果直接是object形式，不是一个响应式的，这里的变化不会被更新到inject的地方
     // const context: any = reactive({
     //   SchemaItem,
@@ -95,6 +122,7 @@ export default defineComponent({
     const context: any = {
       SchemaItem,
       formatMapRef,
+      transformSchemaRef,
       //   theme: props.theme,
     };
 
@@ -116,6 +144,15 @@ export default defineComponent({
           : [props.customFormats];
         customFormats.forEach((format) => {
           validatorRef.value.addFormat(format.name, format.definition);
+        });
+      }
+
+      if (props.customKeywords) {
+        const customKeywords = Array.isArray(props.customKeywords)
+          ? props.customKeywords
+          : [props.customKeywords];
+        customKeywords.forEach((keyword) => {
+          validatorRef.value.addKeyword(keyword.name, keyword.definition);
         });
       }
     });
