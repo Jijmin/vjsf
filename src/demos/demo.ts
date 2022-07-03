@@ -14,6 +14,11 @@ export default {
         minLength: 10,
         title: 're try password',
       },
+      color: {
+        type: 'string',
+        format: 'color',
+        title: 'Imput Color',
+      },
     },
   },
   async customValidate(data: any, errors: any) {

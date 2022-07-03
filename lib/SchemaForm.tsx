@@ -1,4 +1,5 @@
 import {
+  computed,
   defineComponent,
   PropType,
   provide,
@@ -8,7 +9,7 @@ import {
   watch,
   watchEffect,
 } from 'vue';
-import { Schema, UISchema } from './types';
+import { CommonWidgetDefine, CustomFormat, Schema, UISchema } from './types';
 import SchemaItem from './SchemaItem';
 import { SchemaFormContextKey } from './context';
 import Ajv, { Options } from 'ajv';
@@ -55,6 +56,9 @@ export default defineComponent({
     customValidate: {
       type: Function as PropType<(data: any, errors: any) => void>,
     },
+    customFormats: {
+      type: [Array, Object] as PropType<CustomFormat[] | CustomFormat>,
+    },
     uiSchema: {
       type: Object as PropType<UISchema>,
     },
@@ -69,6 +73,20 @@ export default defineComponent({
       props.onChange(v);
     };
 
+    const formatMapRef = computed(() => {
+      if (props.customFormats) {
+        const customFormats = Array.isArray(props.customFormats)
+          ? props.customFormats
+          : [props.customFormats];
+        return customFormats.reduce((result, format) => {
+          result[format.name] = format.component;
+          return result;
+        }, {} as { [key: string]: CommonWidgetDefine });
+      } else {
+        return {};
+      }
+    });
+
     // 解决循环引用问题，如果直接是object形式，不是一个响应式的，这里的变化不会被更新到inject的地方
     // const context: any = reactive({
     //   SchemaItem,
@@ -76,6 +94,7 @@ export default defineComponent({
     // 不过我们这里SchemaItem是一个固定的组件，不会进行动态变化，直接使用普通对象就可以了
     const context: any = {
       SchemaItem,
+      formatMapRef,
       //   theme: props.theme,
     };
 
@@ -89,6 +108,16 @@ export default defineComponent({
         ...defaultAjvOptions,
         ...props.ajvOptions,
       });
+
+      // 将CustomFormat定义到Ajv上
+      if (props.customFormats) {
+        const customFormats = Array.isArray(props.customFormats)
+          ? props.customFormats
+          : [props.customFormats];
+        customFormats.forEach((format) => {
+          validatorRef.value.addFormat(format.name, format.definition);
+        });
+      }
     });
 
     const validateResolveRef = ref();

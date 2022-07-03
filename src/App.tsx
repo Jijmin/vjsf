@@ -7,6 +7,7 @@ import demos from './demos';
 
 import SchemaForm, { ThemeProvider } from '../lib';
 import themeDefault from '../lib/theme-default';
+import customFormat from './plugins/customFormat';
 
 // TODO: 在lib中export
 // eslint-disable-next-line
@@ -206,6 +207,7 @@ export default defineComponent({
                   onChange={handleChange}
                   contextRef={contextRef}
                   ref={nameRef}
+                  customFormats={customFormat}
                   customValidate={demo.customValidate}
                 />
               </ThemeProvider>
